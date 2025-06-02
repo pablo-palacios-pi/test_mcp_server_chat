@@ -1,3 +1,5 @@
+# SERVER MCP -- ACA INSTANCIAMOS LAS TOOLS DISPONIBLES PARA NUESTRO AGENTE O LLM. 
+
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("functions")
@@ -20,7 +22,5 @@ async def traer_nombres():
 
 
 # Esta línea ejecuta el servidor MCP en modo stdio, que es el transporte necesario para integrarlo con LangChain o LangGraph (por ejemplo, con create_react_agent()).
-
-
 if __name__ =="__main__":
     mcp.run(transport="stdio")
