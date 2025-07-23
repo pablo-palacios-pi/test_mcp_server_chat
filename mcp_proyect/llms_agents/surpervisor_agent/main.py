@@ -1,7 +1,11 @@
+from fastapi import FastAPI
 from fastapi import APIRouter,status
 from pydantic import BaseModel
 from models import chat_con_tools
 
+# Creamos la app antes de ejecutar uvicorn
+app = FastAPI()
+app.include_router(prefix="/api", tags=["Endpoints"])
 
 router = APIRouter()
 
@@ -15,3 +19,5 @@ async def chat_ia(consulta: New_content):
     return {"response":response}
 
 
+
+# uvicorn main:app --reload 

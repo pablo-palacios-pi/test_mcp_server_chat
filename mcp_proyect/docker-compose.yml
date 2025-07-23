@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  agent_math:
+    build:
+      context: .
+      dockerfile: ./llms_agents/DockerFile
+    volumes:
+      - ./llms_agents/agents_config/math_agent:/app
+    ports:
+      - "8002:8002"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8002"]
+
+  agent_sql:
+    build:
+      context: .
+      dockerfile: ./llms_agents/DockerFile
+    volumes:
+      - ./llms_agents/agents_config/sql_agent:/app
+    ports:
+      - "8003:8003"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+
+  supervisor:
+    build:
+      context: .
+      dockerfile: ./llms_agents/DockerFile
+    volumes:
+      - ./llms_agents/surpervisor_agent:/app
+    ports:
+      - "8000:8000"
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

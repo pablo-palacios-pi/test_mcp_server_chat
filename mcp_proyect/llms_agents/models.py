@@ -5,10 +5,28 @@ from mcp.client.stdio import stdio_client
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langgraph.prebuilt import create_react_agent
 from langchain_openai.chat_models import AzureChatOpenAI
+from logs.config_logs import Logger
+import httpx
 
 load_dotenv()
 
+class HttpAgent:
+    def __init__(self, name: str, endpoint: str):
+        self.name = name
+        self.endpoint = endpoint
 
+    async def run(self, prompt: str):
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                url=self.endpoint,
+                json={"prompt": prompt},
+                timeout=30.0
+            )
+            response.raise_for_status()
+            return response.json().get("response", "")
+        
+
+        
 # instanciamos el server y le pasamos donde estan alojadas las tools 
 server_params = StdioServerParameters(
     command="python",
@@ -34,16 +52,17 @@ class MCP_Server:
                 self.session = session
                 await self.session.initialize()
                 tools = await load_mcp_tools(self.session)  # funcion que carga todas las tools disponibles 
-                agent = create_react_agent(llm, tools)   # Aca, mediante esta funcion, instanciamos una suerte de agente (puede ser otro agente sin drama) donde concete el llm con las tools
+                react_orquestador  = create_react_agent(llm, tools)   # Aca, mediante esta funcion, instanciamos una suerte de agente (puede ser otro agente sin drama) donde concete el llm con las tools
                                                         # Para tener en cuenta, el server de MCP, solo organiza y ofrece las tools disponibles, luego puede ser un agente o un llm directo que las instancie y sepa que hacer con cada una
                 message = {"messages":[{"role":"user","content":consulta}]}
-                return await agent.ainvoke(message)  # aca invoca la respuesta del llm 
+                return await react_orquestador.ainvoke(message)  # aca invoca la respuesta del llm 
 
 
 # funcion que conecta la consulta del cliente con el server
 async def chat_con_tools(consulta: str):
-    print("inicio: chat_con_tools")
+    Logger.add_log("info","inicio: chat_con_tools")
     session = MCP_Server()
     response = await session.connect(consulta=consulta)
+    Logger.add_log("info",f"{response}")
     print(F"RESPONSE: {response}")    
     return response["messages"][-1].content
