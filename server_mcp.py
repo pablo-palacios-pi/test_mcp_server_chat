@@ -1,5 +1,4 @@
-from mcp import ClientSession
-from mcp.client.sse import sse_client
+
 import logging
 from mcp.server.fastmcp import FastMCP
 from mcp.server.sse import SseServerTransport
@@ -9,9 +8,9 @@ class MCP_Server_SEE:
     def __init__(self, name_server: str):
         self.mcp = FastMCP(name=name_server)
         self.transport = SseServerTransport("/see")
-        self.register_tools()
+        
 
-    def register_tools(self):
+    
         @self.mcp.tool(name="sumar", description="Sirve para sumar dos enteros entre si")
         async def sumar(a: int, b: int): 
             return a + b
