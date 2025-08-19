@@ -43,37 +43,5 @@ class OpenAiService:
         except Exception as e:
             raise Exception(f'Error inesperado leer archivo prompt {str(e)}', 'LPS-002', 500)
         
-
-
-
-
-
-
-
-        
-    # def chat_model_gpt_4o_mini(self,tools,consulta: str):
-    #     try:
-    #         prompt_template = PromptTemplate(
-    #             input_variables=["tools"],
-    #             template= self.load_promptSystem(prompt_file_name=PROMPT_FILE_TOOLS)
-    #         )
-            
-    #         final_prompt = prompt_template.format(
-    #             tools=tools
-    #         )
-        
-    #         messages =[{"role":"system", "content":final_prompt},
-    #                    {"role":"system", "content":consulta}]
-
-    #         response = self.client.chat.completions.create(
-    #             model=AZURE_OPENAI_MODEL_4o_MINI,
-    #             messages=messages,
-    #             temperature=0.5,
-    #             top_p=1.0
-    #         )
-        
-    #         return response.choices[0].message.content
-    #     except Exception as e:
-    #         raise Exception(f'Error inesperado al cargar archivos {str(e)}', 'MRP-000', 500)
         
 
