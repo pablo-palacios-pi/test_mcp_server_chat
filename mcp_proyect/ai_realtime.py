@@ -1,6 +1,9 @@
 
+from tabnanny import verbose
 from mcp import ClientSession
 from mcp.client.sse import sse_client
+from mcp.client.streamable_http import streamablehttp_client
+
 import logging
 import aiohttp
 from services.service_openai import OpenAiService
@@ -30,17 +33,24 @@ class MCP_Client():
         except Exception as e:
             raise Exception(f"MCP SERVER NOT UP: {e}")  
         
-    async def mcp_process(self, consulta: str):
+    async def mcp_process(self):
+        consulta = "necesito que me brindes los nombres que estan almacenados en la lista"
         
         try:
-            async with sse_client(url=URL_LOCAL_MCP_SERVER_STREAM) as (in_stream, out_stream):
-                async with ClientSession(in_stream, out_stream) as session:
+            # Connect to a streamable HTTP server
+            async with streamablehttp_client(URL_LOCAL_MCP_SERVER_STREAM) as (
+                read_stream,
+                write_stream,
+                _,
+            ):
+                # Create a session using the client streams
+                async with ClientSession(read_stream, write_stream) as session:
                     await session.initialize()
+                    # List available tools
+                    tools = await session.list_tools()
+                    tools_list = await load_mcp_tools(session)
 
-                    tools = await load_mcp_tools(session)
-
-                    print(F"TOOLS: {tools}")
-                    
+            
                     if not tools:
                         logging.error("Tools not charge!!")
 
@@ -48,14 +58,24 @@ class MCP_Client():
 
                     prompt = self.openai.load_promptSystem()
 
-                    agent = create_react_agent(llm, tools, prompt=prompt)
+                    agent = create_react_agent(llm, tools_list, prompt=prompt)
 
                     message = {
                             "messages": [
                                 {"role": "user", "content": consulta}
                             ]
                     }
-                    return await agent.ainvoke(message)
+                    
+
+                    async for token in agent.astream(
+                        input=message,
+                        stream_mode="messages"
+                    ):  
+                        yield token[0].content
+                        # print(f"token: {chunk[0].content}")
+                        # print("\n")
+
+                        
                     
         except Exception as e:
             logging.error(f"Error conection MPC Server: {e}")

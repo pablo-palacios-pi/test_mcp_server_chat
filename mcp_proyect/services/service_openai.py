@@ -12,7 +12,6 @@ from core.config import (
     AZURE_OPENAI_ENDPOINT,
     AZURE_OPENAI_MODEL_VERSION,
     AZURE_OPENAI_DEPLOYMENT_NAME
-
 )
 
 class OpenAiService:

@@ -1,9 +1,0 @@
-langchain_mcp_adapters
-langgraph
-langchain_openai
-openai
-fastapi 
-uvicorn 
-mcp
-langchain
-dotenv

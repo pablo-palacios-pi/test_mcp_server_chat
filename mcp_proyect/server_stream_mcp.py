@@ -5,7 +5,7 @@ from mcp.server.fastmcp import FastMCP
 
 class MCP_Server_SEE:
     def __init__(self, name_server: str):
-        self.mcp = FastMCP(name=name_server, host="0.0.0.0", port=8000, streamable_http_path="/mcp",stateless_http=True)
+        self.mcp = FastMCP(name=name_server, streamable_http_path="/mcp",stateless_http=True)
        
         
     

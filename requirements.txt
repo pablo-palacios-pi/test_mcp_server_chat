@@ -1,0 +1,9 @@
+langchain_mcp_adapters==0.1.9
+langgraph
+langchain_openai
+openai
+uvicorn 
+mcp==1.13.0
+langchain
+dotenv
+fastapi
