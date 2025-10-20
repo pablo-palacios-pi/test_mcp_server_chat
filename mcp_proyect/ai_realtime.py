@@ -71,9 +71,9 @@ class MCP_Client():
                         input=message,
                         stream_mode="messages"
                     ):  
-                        yield token[0].content
-                        # print(f"token: {chunk[0].content}")
-                        # print("\n")
+                        #yield token[0].content
+                        print(f"token: {token}")
+                        print("\n")
 
                         
                     

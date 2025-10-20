@@ -15,11 +15,12 @@ async def startup_event():
 @app.get("/get_mcp")
 async def look_mcp_updates():
     mcp_client = MCP_Client()
-    async def token_generator():
-        async for token in mcp_client.mcp_process():
-            yield f"{token}\n"
+    await mcp_client.mcp_process()
+    # async def token_generator():
+    #     async for token in mcp_client.mcp_process():
+    #         yield f"{token}\n"
 
-    return StreamingResponse(token_generator(), media_type="text/plain")
+    # return StreamingResponse(token_generator(), media_type="text/plain")
 
 
 if __name__=="__main__":
